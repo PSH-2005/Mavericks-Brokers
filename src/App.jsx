@@ -7,6 +7,7 @@ import Navigation from './components/Navigation';
 import Sort from './components/Sort';
 import Card from './components/Card';
 import SeatChart from './components/SeatChart';
+import IPAddressDisplay from './components/ipAdressDisplay';
 
 // ABIs
 import TokenMaster from './abis/TokenMaster.json';
@@ -164,6 +165,7 @@ function App() {
           setToggle={setToggle}
         />
       )}
+      <IPAddressDisplay/>
     </div>
   );
 }
