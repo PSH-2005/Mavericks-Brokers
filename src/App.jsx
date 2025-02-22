@@ -12,7 +12,7 @@ import IPAddressDisplay from './components/ipAdressDisplay';
 // ABIs
 import TokenMaster from './abis/TokenMaster.json';
 
-const CONTRACT_ADDRESS = "0x31540674be8Cd140AA6e4Be3E207c8fF4E60fCA3";
+const CONTRACT_ADDRESS = "0xA6C0d559a31838b3f3Ef940cF3bBD22C8f70c1fa";
 
 function App() {
   const [provider, setProvider] = useState(null);
