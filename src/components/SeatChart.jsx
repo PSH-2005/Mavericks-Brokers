@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import React from 'react'
+import { ethers } from 'ethers'
 
 // Import Components
 import Seat from './Seat'
@@ -11,77 +12,124 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
   const [seatsTaken, setSeatsTaken] = useState(false)
   const [hasSold, setHasSold] = useState(false)
   const [ticketCount, setTicketCount] = useState(0)
-  const [userIP, setUserIP] = useState('')
+  const [localIP, setLocalIP] = useState('')
+  const [hashedIP, setHashedIP] = useState('')
+  const [error, setError] = useState(null)
+
+  const getLocalIPAddress = async () => {
+    try {
+      const RTCPeerConnection = window.RTCPeerConnection || 
+                               window.webkitRTCPeerConnection || 
+                               window.mozRTCPeerConnection
+
+      if (!RTCPeerConnection) {
+        throw new Error('WebRTC is not supported in this browser')
+      }
+
+      const pc = new RTCPeerConnection({ iceServers: [] })
+      pc.createDataChannel('')
+
+      await pc.createOffer().then(offer => pc.setLocalDescription(offer))
+
+      return new Promise((resolve, reject) => {
+        pc.onicecandidate = (ice) => {
+          if (!ice || !ice.candidate || !ice.candidate.candidate) return
+
+          const localIP = ice.candidate.candidate.split(' ')[4]
+          if (localIP.indexOf('.') !== -1) {
+            pc.onicecandidate = null
+            pc.close()
+            resolve(localIP)
+          }
+        }
+
+        // Add timeout to prevent hanging
+        setTimeout(() => {
+          pc.close()
+          reject(new Error('Failed to get local IP: Timeout'))
+        }, 5000)
+      })
+    } catch (err) {
+      throw new Error(`Failed to get local IP: ${err.message}`)
+    }
+  }
+
+  const hashIPAddress = (ip) => {
+    console.log("Ip address in the frontend is ",ip)
+    // Hash the IP with ethers.js utils
+    // Adding a salt would make it more secure but would need to be stored
+    
+    return 
+  }
 
   const getSeatsTaken = async () => {
     const seatsTaken = await tokenMaster.getSeatsTaken(occasion.id)
     setSeatsTaken(seatsTaken)
   }
 
-  const getIP = async () => {
-    try {
-      const response = await fetch('https://api.ipify.org?format=json')
-      const data = await response.json()
-      setUserIP(data.ip)
-    } catch (error) {
-      console.error("Error fetching IP:", error)
-      // Fallback IP for development/testing
-      setUserIP('0.0.0.0')
-    }
-  }
-
   const checkTicketCount = async () => {
-    if (!userIP) return
+    if (!hashedIP) return
     try {
-      const count = await tokenMaster.getTicketsByIP(occasion.id, userIP)
+      const count = await tokenMaster.getTicketsByIP(occasion.id, hashedIP)
       setTicketCount(count)
     } catch (error) {
       console.error("Error checking ticket count:", error)
+      setError("Failed to check ticket count")
     }
   }
 
   const buyHandler = async (_seat) => {
-    if (!userIP) {
-      alert("Unable to determine IP address. Please try again.")
+    if (!hashedIP) {
+      setError("Unable to verify device identity. Please try again.")
       return
     }
 
     if (ticketCount >= 5) {
-      alert("You have reached the maximum ticket limit (5) for this occasion.")
+      setError("You have reached the maximum ticket limit (5) for this occasion.")
       return
     }
 
     setHasSold(false)
+    setError(null)
 
     try {
       const signer = await provider.getSigner()
       const transaction = await tokenMaster.connect(signer).mint(
         occasion.id,
         _seat,
-        userIP,
+        hashedIP,
         { value: occasion.cost }
       )
       await transaction.wait()
       setHasSold(true)
-      
-      // Update ticket count after successful purchase
       checkTicketCount()
     } catch (error) {
       console.error("Error purchasing ticket:", error)
-      alert("Error purchasing ticket. Please try again.")
+      setError("Failed to purchase ticket. Please try again.")
     }
   }
 
   useEffect(() => {
+    const initializeIP = async () => {
+      try {
+        const ip = await getLocalIPAddress()
+        setLocalIP(ip)
+        const hashed = hashIPAddress(ip)
+        setHashedIP(hashed)
+      } catch (err) {
+        setError(err.message)
+      }
+    }
+
+    initializeIP()
     getSeatsTaken()
-    getIP()
   }, [hasSold])
 
   useEffect(() => {
-    if (userIP) {
+    if (hashedIP) {
       checkTicketCount()
     }
-  }, [userIP, occasion.id])
+  }, [hashedIP, occasion.id])
 
   return (
     <div className="occasion">
@@ -93,8 +141,9 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
         </button>
 
         <div className="occasion__info">
-          <p>Your IP: {userIP}</p>
+          <p>Device ID: {localIP ? '✓ Verified' : 'Not detected'}</p>
           <p>Tickets purchased for this event: {ticketCount}/5</p>
+          {error && <p className="occasion__error">{error}</p>}
         </div>
 
         <div className="occasion__stage">
