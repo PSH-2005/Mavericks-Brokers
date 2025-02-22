@@ -7,32 +7,20 @@ const IPAddressDisplay = () => {
   useEffect(() => {
     const getLocalIPAddress = async () => {
       try {
-        // Using WebRTC to get local IP address
         const RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-        
         if (!RTCPeerConnection) {
           setError('WebRTC is not supported in this browser');
           return;
         }
-
-        const pc = new RTCPeerConnection({
-          iceServers: []
-        });
-
+        const pc = new RTCPeerConnection({ iceServers: [] });
         pc.createDataChannel('');
-        
-        pc.createOffer()
-          .then(offer => pc.setLocalDescription(offer))
-          .catch(err => setError(err.toString()));
-
+        pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(err => setError(err.toString()));
         pc.onicecandidate = (ice) => {
           if (!ice || !ice.candidate || !ice.candidate.candidate) return;
-
           const localIP = ice.candidate.candidate.split(' ')[4];
           if (localIP.indexOf('.') !== -1) {
             setIpAddress(localIP);
           }
-          
           pc.onicecandidate = null;
           pc.close();
         };
@@ -41,7 +29,6 @@ const IPAddressDisplay = () => {
         console.error(err);
       }
     };
-
     getLocalIPAddress();
   }, []);
 

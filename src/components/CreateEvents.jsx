@@ -19,12 +19,9 @@ const CreateEvents = ({ tokenMaster, provider }) => {
       try {
         const owner = await tokenMaster.owner();
         console.log("Owner in the contract:", owner);
-
         const signer = await provider.getSigner();
         const address = await signer.getAddress();
         console.log("User address:", address);
-
-        // Ensure both addresses have the correct checksum format
         setIsOwner(ethers.getAddress(owner) === ethers.getAddress(address));
       } catch (error) {
         console.error("Error checking ownership:", error);
@@ -51,13 +48,8 @@ const CreateEvents = ({ tokenMaster, provider }) => {
     setMessage({ type: '', content: '' });
 
     try {
-      // Convert cost to wei using ethers v6 method
       const costInWei = ethers.parseEther(formData.cost.toString());
-
-      // Get signer
       const signer = await provider.getSigner();
-
-      // Create transaction
       const transaction = await tokenMaster.connect(signer).list(
         formData.name,
         costInWei,
@@ -66,16 +58,11 @@ const CreateEvents = ({ tokenMaster, provider }) => {
         formData.time,
         formData.location
       );
-
-      // Wait for transaction to be confirmed
       await transaction.wait();
-
       setMessage({
         type: 'success',
         content: 'Event created successfully!'
       });
-
-      // Reset form fields
       setFormData({
         name: '',
         cost: '',
@@ -84,7 +71,6 @@ const CreateEvents = ({ tokenMaster, provider }) => {
         time: '',
         location: ''
       });
-
     } catch (error) {
       console.error("Error creating event:", error);
       setMessage({
@@ -109,15 +95,11 @@ const CreateEvents = ({ tokenMaster, provider }) => {
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow">
       <h2 className="text-2xl font-bold mb-6 text-center">Create New Event</h2>
-
       {message.content && (
-        <div className={`p-4 rounded-lg mb-6 ${
-          message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-        }`}>
+        <div className={`p-4 rounded-lg mb-6 ${message.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
           {message.content}
         </div>
       )}
-
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block mb-2 text-sm font-medium">Event Name</label>
@@ -131,7 +113,6 @@ const CreateEvents = ({ tokenMaster, provider }) => {
             placeholder="Enter event name"
           />
         </div>
-
         <div>
           <label className="block mb-2 text-sm font-medium">Cost (ETH)</label>
           <input
@@ -146,7 +127,6 @@ const CreateEvents = ({ tokenMaster, provider }) => {
             placeholder="Enter ticket cost in ETH"
           />
         </div>
-
         <div>
           <label className="block mb-2 text-sm font-medium">Maximum Tickets</label>
           <input
@@ -160,7 +140,6 @@ const CreateEvents = ({ tokenMaster, provider }) => {
             placeholder="Enter maximum number of tickets"
           />
         </div>
-
         <div>
           <label className="block mb-2 text-sm font-medium">Date</label>
           <input
@@ -173,7 +152,6 @@ const CreateEvents = ({ tokenMaster, provider }) => {
             placeholder="Enter date (e.g., Jun 30)"
           />
         </div>
-
         <div>
           <label className="block mb-2 text-sm font-medium">Time</label>
           <input
@@ -186,7 +164,6 @@ const CreateEvents = ({ tokenMaster, provider }) => {
             placeholder="Enter time (e.g., 7:00PM EST)"
           />
         </div>
-
         <div>
           <label className="block mb-2 text-sm font-medium">Location</label>
           <input
@@ -199,15 +176,10 @@ const CreateEvents = ({ tokenMaster, provider }) => {
             placeholder="Enter event location"
           />
         </div>
-
         <button
           type="submit"
           disabled={loading}
-          className={`w-full p-3 text-white rounded-lg ${
-            loading 
-              ? 'bg-gray-400 cursor-not-allowed' 
-              : 'bg-blue-600 hover:bg-blue-700'
-          }`}
+          className={`w-full p-3 text-white rounded-lg ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}`}
         >
           {loading ? 'Creating Event...' : 'Create Event'}
         </button>

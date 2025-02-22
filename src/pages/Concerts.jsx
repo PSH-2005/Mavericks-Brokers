@@ -1,27 +1,27 @@
-import './App.css';
+import React from "react";
+import "./Pages.css";
+// import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-import Navigation from './components/Navigation';
-import Sort from './components/Sort';
-import Card from './components/Card';
-import SeatChart from './components/SeatChart';
-import IPAddressDisplay from './components/ipAdressDisplay';
-import CreateEvents from './components/CreateEvents';
-import TokenMaster from './abis/TokenMaster.json';
-import Cardd from './components/cardd';
-import Home from "./pages/Home";
-import Concerts from "./pages/Concerts";
-import Sports from "./pages/Sports";
-import Hotels from "./pages/Hotels";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
+import Navigation from "../components/Navigation";
+import Sort from '../components/Sort';
+import Card from '../components/Card';
+import SeatChart from '../components/SeatChart';
+import IPAddressDisplay from '../components/ipAdressDisplay';
+import CreateEvents from '../components/CreateEvents';
+import TokenMaster from '../abis/TokenMaster.json';
+import Cardd from '../components/cardd';
+import Sports from './Sports.jsx';
+import Hotels from "./Hotels";
+import About from "./About";
+import Contact from "./Contact";
 
 const CONTRACT_ADDRESS = "0xA6C0d559a31838b3f3Ef940cF3bBD22C8f70c1fa";
 
-function App() {
-  const [provider, setProvider] = useState(null);
+const Concerts = () => {
+    const [provider, setProvider] = useState(null);
   const [account, setAccount] = useState(null);
   const [tokenMaster, setTokenMaster] = useState(null);
   const [occasions, setOccasions] = useState([]);
@@ -125,26 +125,40 @@ function App() {
       </div>
     );
   }
-
   return (
-    <div>
+    <div className="page">
+      <h1>Concerts</h1>
+      <p>Discover the latest concerts happening near you.</p>
       
-      <header><Router>
-      <Navigation account={account} setAccount={setAccount} />
-      <div className="container">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/concerts" element={<Concerts />} />
-          <Route path="/sports" element={<Sports />} />
-          <Route path="/hotels" element={<Hotels />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-        </Routes>
+      <Sort />
+      <div className="cards">
+        {occasions.map((occ, index) => (
+          <Card
+            occasion={occ}
+            id={index + 1}
+            tokenMaster={tokenMaster}
+            provider={provider}
+            account={account}
+            toggle={toggle}
+            setToggle={setToggle}
+            setOccasion={setOccasion}
+            key={index}
+          />
+        ))}
       </div>
-    </Router>
-      </header>
-</div>
-  );
-}
 
-export default App;
+      {toggle && (
+        <SeatChart
+          occasion={occasion}
+          tokenMaster={tokenMaster}
+          provider={provider}
+          setToggle={setToggle}
+        />
+      )}
+      <IPAddressDisplay />
+    </div>
+
+  );
+};
+
+export default Concerts;

@@ -1,210 +1,274 @@
-import { useEffect, useState } from 'react'
-import React from 'react'
-import { ethers } from 'ethers'
-
-// Import Components
-import Seat from './Seat'
-
-// Import Assets
-import close from '../assets/close.svg'
+import { useEffect, useState, useRef } from 'react';
+import React from 'react';
+import { ethers } from 'ethers';
+import Seat from './Seat';
 import { keccak256, toUtf8Bytes } from "ethers";
+
 const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
-  const [seatsTaken, setSeatsTaken] = useState(false)
-  const [hasSold, setHasSold] = useState(false)
-  const [ticketCount, setTicketCount] = useState(0)
-  const [localIP, setLocalIP] = useState('')
-  const [hashedIP, setHashedIP] = useState('')
-  const [error, setError] = useState(null)
+  const [seatsTaken, setSeatsTaken] = useState([]);
+  const [hasSold, setHasSold] = useState(false);
+  const [ticketCount, setTicketCount] = useState(0);
+  const [localIP, setLocalIP] = useState('');
+  const [hashedIP, setHashedIP] = useState('');
+  const [error, setError] = useState(null);
+  const [selectedSeat, setSelectedSeat] = useState(null);
+
+  // Ref for the scrollable container
+  const scrollContainerRef = useRef(null);
 
   const getLocalIPAddress = async () => {
     try {
-      const RTCPeerConnection = window.RTCPeerConnection || 
-                               window.webkitRTCPeerConnection || 
-                               window.mozRTCPeerConnection
-
+      const RTCPeerConnection =
+        window.RTCPeerConnection ||
+        window.webkitRTCPeerConnection ||
+        window.mozRTCPeerConnection;
       if (!RTCPeerConnection) {
-        throw new Error('WebRTC is not supported in this browser')
+        throw new Error('WebRTC is not supported in this browser');
       }
-
-      const pc = new RTCPeerConnection({ iceServers: [] })
-      pc.createDataChannel('')
-
-      await pc.createOffer().then(offer => pc.setLocalDescription(offer))
-
+      const pc = new RTCPeerConnection({ iceServers: [] });
+      pc.createDataChannel('');
+      await pc.createOffer().then((offer) => pc.setLocalDescription(offer));
       return new Promise((resolve, reject) => {
         pc.onicecandidate = (ice) => {
-          if (!ice || !ice.candidate || !ice.candidate.candidate) return
-
-          const localIP = ice.candidate.candidate.split(' ')[4]
+          if (!ice || !ice.candidate || !ice.candidate.candidate) return;
+          const localIP = ice.candidate.candidate.split(' ')[4];
           if (localIP.indexOf('.') !== -1) {
-            pc.onicecandidate = null
-            pc.close()
-            resolve(localIP)
+            pc.onicecandidate = null;
+            pc.close();
+            resolve(localIP);
           }
-        }
-
-        // Add timeout to prevent hanging
+        };
         setTimeout(() => {
-          pc.close()
-          reject(new Error('Failed to get local IP: Timeout'))
-        }, 5000)
-      })
+          pc.close();
+          reject(new Error('Failed to get local IP: Timeout'));
+        }, 5000);
+      });
     } catch (err) {
-      throw new Error(`Failed to get local IP: ${err.message}`)
+      throw new Error(`Failed to get local IP: ${err.message}`);
     }
-  }
-
-
-  const hashIPAddress = (ip) => {
-    console.log("IP in the frontend:", ip);
-
-    // Convert IP address to bytes and hash it
-    const hashed = keccak256(toUtf8Bytes(ip));
-
-    console.log("Hashed IP in the backend:", hashed);
-    return hashed 
   };
 
+  const hashIPAddress = (ip) => keccak256(toUtf8Bytes(ip));
+
   const getSeatsTaken = async () => {
-    const seatsTaken = await tokenMaster.getSeatsTaken(occasion.id)
-    setSeatsTaken(seatsTaken)
-  }
+    try {
+      const taken = await tokenMaster.getSeatsTaken(occasion.id);
+      setSeatsTaken(taken);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load seats taken");
+    }
+  };
 
   const checkTicketCount = async () => {
-    if (!hashedIP) return
+    if (!hashedIP) return;
     try {
-      const count = await tokenMaster.getTicketsByIP(occasion.id, hashedIP)
-      setTicketCount(count)
+      const count = await tokenMaster.getTicketsByIP(occasion.id, hashedIP);
+      setTicketCount(Number(count));
     } catch (error) {
-      console.error("Error checking ticket count:", error)
-      setError("Failed to check ticket count")
+      console.error("Error checking ticket count:", error);
+      setError("Failed to check ticket count");
     }
-  }
+  };
 
-  const buyHandler = async (_seat) => {
+  const buyHandler = async (seatNumber) => {
+    // Toggle selection if the same seat is clicked.
+    if (selectedSeat === seatNumber) {
+      setSelectedSeat(null);
+      return;
+    }
+    setSelectedSeat(seatNumber);
+
     if (!hashedIP) {
-      setError("Unable to verify device identity. Please try again.")
-      return
+      setError("Unable to verify device identity. Please try again.");
+      setSelectedSeat(null);
+      return;
     }
-
     if (ticketCount >= 5) {
-      setError("You have reached the maximum ticket limit (5) for this occasion.")
-      return
+      setError("You have reached the maximum ticket limit (5) for this occasion.");
+      setSelectedSeat(null);
+      return;
     }
-
-    setHasSold(false)
-    setError(null)
-
+    setHasSold(false);
+    setError(null);
     try {
-      const signer = await provider.getSigner()
+      const signer = await provider.getSigner();
       const transaction = await tokenMaster.connect(signer).mint(
         occasion.id,
-        _seat,
+        seatNumber,
         hashedIP,
         { value: occasion.cost }
-      )
-      await transaction.wait()
-      setHasSold(true)
-      checkTicketCount()
+      );
+      await transaction.wait();
+      setHasSold(true);
+      checkTicketCount();
+      setSelectedSeat(null);
+      getSeatsTaken();
     } catch (error) {
-      console.error("Error purchasing ticket:", error)
-      setError("Failed to purchase ticket. Please try again.")
+      console.error("Error purchasing ticket:", error);
+      setError("Failed to purchase ticket. Please try again.");
+      setSelectedSeat(null);
     }
-  }
+  };
+
+  // Enable arrow key scrolling.
+  const handleKeyDown = (e) => {
+    if (!scrollContainerRef.current) return;
+    const scrollAmount = 20;
+    if (e.key === 'ArrowDown') {
+      scrollContainerRef.current.scrollTop += scrollAmount;
+    } else if (e.key === 'ArrowUp') {
+      scrollContainerRef.current.scrollTop -= scrollAmount;
+    }
+  };
 
   useEffect(() => {
     const initializeIP = async () => {
       try {
-        const ip = await getLocalIPAddress()
-        setLocalIP(ip)
-        const hashed = hashIPAddress(ip)
-        setHashedIP(hashed)
+        const ip = await getLocalIPAddress();
+        setLocalIP(ip);
+        const hashed = hashIPAddress(ip);
+        setHashedIP(hashed);
       } catch (err) {
-        setError(err.message)
+        setError(err.message);
       }
-    }
-
-    initializeIP()
-    getSeatsTaken()
-  }, [hasSold])
+    };
+    initializeIP();
+    getSeatsTaken();
+  }, [hasSold]);
 
   useEffect(() => {
     if (hashedIP) {
-      checkTicketCount()
+      checkTicketCount();
     }
-  }, [hashedIP, occasion.id])
+  }, [hashedIP, occasion.id]);
+
+  // Split seats into left and right blocks.
+  const totalSeats = Number(occasion.maxTickets);
+  const leftSeatsCount = Math.ceil(totalSeats / 2);
+  const leftSeats = Array.from({ length: leftSeatsCount }, (_, i) => i + 1);
+  const rightSeats = Array.from({ length: totalSeats - leftSeatsCount }, (_, i) => leftSeatsCount + i + 1);
 
   return (
     <div className="occasion">
-      <div className="occasion__seating">
-        <h1>{occasion.name} Seating Map</h1>
+      <div className="occasion__seating" style={{ position: 'relative' }}>
+        {/* Close button positioned at the top right */}
+        <div
+          className="close-btn-container"
+          style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }}
+          onClick={() => setToggle(false)}
+        >
+          <span className="close-icon">&times;</span>
+          <div className="close-tooltip">Close Tab</div>
+        </div>
 
-        <button onClick={() => setToggle(false)} className="occasion__close">
-          <img src={close} alt="Close" />
-        </button>
-
+        <h1 className="occasion__title">{occasion.name} Seating Map</h1>
         <div className="occasion__info">
-          <p>Device ID: {localIP ? '✓ Verified' : 'Not detected'}</p>
-          <p>Tickets purchased for this event: {ticketCount}/5</p>
+          <p>Device: {localIP ? 'Verified' : 'Not detected'}</p>
+          <p>Tickets: {ticketCount}/5</p>
           {error && <p className="occasion__error">{error}</p>}
         </div>
-
-        <div className="occasion__stage">
+        {/* Stage with blue border and light grey background */}
+        <div 
+          className="occasion__stage" 
+          style={{ 
+            border: '2px solid blue', 
+            backgroundColor: 'lightgrey',
+            padding: '10px', 
+            borderRadius: '5px', 
+            textAlign: 'center', 
+            marginBottom: '10px',
+            color: 'black'
+          }}
+        >
           <strong>STAGE</strong>
         </div>
-
-        {seatsTaken && Array(25).fill(1).map((e, i) =>
-          <Seat
-            i={i}
-            step={1}
-            columnStart={0}
-            maxColumns={5}
-            rowStart={2}
-            maxRows={5}
-            seatsTaken={seatsTaken}
-            buyHandler={buyHandler}
-            key={i}
-          />
-        )}
-
-        <div className="occasion__spacer--1">
-          <strong>WALKWAY</strong>
+        {/* Scrollable seating area */}
+        <div 
+          className="scrollable-section" 
+          ref={scrollContainerRef} 
+          tabIndex="0"
+          onKeyDown={handleKeyDown}
+          style={{ 
+            overflowY: 'auto', 
+            height: '400px', 
+            padding: '10px' 
+          }}
+        >
+          <div className="occasion__hallway">
+            {/* Left Walkway with blue border and light grey background */}
+            <div 
+              className="occasion__walkway occasion__walkway--left"
+              style={{ 
+                border: '2px solid blue', 
+                backgroundColor: 'lightgrey',
+                padding: '5px', 
+                borderRadius: '5px', 
+                marginBottom: '10px',
+                color: 'black'
+              }}
+            >
+              <span>WALKWAY</span>
+            </div>
+            <div className="occasion__seatsWrapper">
+              <div className="occasion__seatsContainer">
+                {leftSeats.map(seatNum => (
+                  <Seat
+                    key={seatNum}
+                    seatNumber={seatNum}
+                    seatsTaken={seatsTaken}
+                    selected={selectedSeat === seatNum}
+                    buyHandler={buyHandler}
+                    className="seat"
+                  />
+                ))}
+              </div>
+              {/* Middle Walkway */}
+              <div 
+                className="occasion__walkway occasion__walkway--middle"
+                style={{ 
+                  border: '2px solid blue', 
+                  backgroundColor: 'lightgrey',
+                  padding: '5px', 
+                  borderRadius: '5px', 
+                  margin: '10px 0',
+                  color: 'black'
+                }}
+              >
+                <span>WALKWAY</span>
+              </div>
+              <div className="occasion__seatsContainer">
+                {rightSeats.map(seatNum => (
+                  <Seat
+                    key={seatNum}
+                    seatNumber={seatNum}
+                    seatsTaken={seatsTaken}
+                    selected={selectedSeat === seatNum}
+                    buyHandler={buyHandler}
+                    className="seat"
+                  />
+                ))}
+              </div>
+            </div>
+            {/* Right Walkway */}
+            <div 
+              className="occasion__walkway occasion__walkway--right"
+              style={{ 
+                border: '2px solid blue', 
+                backgroundColor: 'lightgrey',
+                padding: '5px', 
+                borderRadius: '5px', 
+                marginTop: '10px',
+                color: 'black'
+              }}
+            >
+              <span>WALKWAY</span>
+            </div>
+          </div>
         </div>
-
-        {seatsTaken && Array(Number(occasion.maxTickets) - 50).fill(1).map((e, i) =>
-          <Seat
-            i={i}
-            step={26}
-            columnStart={6}
-            maxColumns={15}
-            rowStart={2}
-            maxRows={15}
-            seatsTaken={seatsTaken}
-            buyHandler={buyHandler}
-            key={i}
-          />
-        )}
-
-        <div className="occasion__spacer--2">
-          <strong>WALKWAY</strong>
-        </div>
-
-        {seatsTaken && Array(25).fill(1).map((e, i) =>
-          <Seat
-            i={i}
-            step={(Number(occasion.maxTickets) - 24)}
-            columnStart={22}
-            maxColumns={5}
-            rowStart={2}
-            maxRows={5}
-            seatsTaken={seatsTaken}
-            buyHandler={buyHandler}
-            key={i}
-          />
-        )}
       </div>
     </div>
   );
-}
+};
 
 export default SeatChart;

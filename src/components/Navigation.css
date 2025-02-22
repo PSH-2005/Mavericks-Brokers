@@ -1,0 +1,48 @@
+.nav {
+    background-color: #002855; /* Dark Blue */
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 3px solid #004aad; /* Blue border */
+  }
+  
+  .nav__links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+  }
+  
+  .nav__links a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+  
+  .nav__links a:hover {
+    color: #ffd700; /* Gold Highlight */
+  }
+  
+  .nav__connect {
+    background-color: white;
+    color: #002855;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    border: 2px solid #004aad;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .nav__connect:hover {
+    background-color: #004aad;
+    color: white;
+  }
+  
+  .nav__search {
+    padding: 0.5rem;
+    border: 2px solid #004aad;
+    border-radius: 5px;
+  }
+  
