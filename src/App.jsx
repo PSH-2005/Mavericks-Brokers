@@ -1,17 +1,13 @@
 import './App.css';
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
-
-// Components
 import Navigation from './components/Navigation';
 import Sort from './components/Sort';
 import Card from './components/Card';
 import SeatChart from './components/SeatChart';
 import IPAddressDisplay from './components/ipAdressDisplay';
-
-// ABIs
 import TokenMaster from './abis/TokenMaster.json';
-
+import CreateEvents from './components/CreateEvents';
 const CONTRACT_ADDRESS = "0xA6C0d559a31838b3f3Ef940cF3bBD22C8f70c1fa";
 
 function App() {
@@ -135,12 +131,15 @@ function App() {
   return (
     <div>
       <header>
+        <CreateEvents
+        tokenMaster={tokenMaster}
+        provider={provider}
+        />
         <Navigation account={account} setAccount={setAccount} />
         <h2 className="header__title bg-red-300"><strong>Event</strong> Tickets</h2>
       </header>
 
       <Sort />
-
       <div className='cards'>
         {occasions.map((occasion, index) => (
           <Card

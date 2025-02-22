@@ -7,7 +7,7 @@ import Seat from './Seat'
 
 // Import Assets
 import close from '../assets/close.svg'
-
+import { keccak256, toUtf8Bytes } from "ethers";
 const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
   const [seatsTaken, setSeatsTaken] = useState(false)
   const [hasSold, setHasSold] = useState(false)
@@ -54,13 +54,16 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
     }
   }
 
+
   const hashIPAddress = (ip) => {
-    console.log("Ip address in the frontend is ",ip)
-    // Hash the IP with ethers.js utils
-    // Adding a salt would make it more secure but would need to be stored
-    
-    return 
-  }
+    console.log("IP in the frontend:", ip);
+
+    // Convert IP address to bytes and hash it
+    const hashed = keccak256(toUtf8Bytes(ip));
+
+    console.log("Hashed IP in the backend:", hashed);
+    return hashed 
+  };
 
   const getSeatsTaken = async () => {
     const seatsTaken = await tokenMaster.getSeatsTaken(occasion.id)
