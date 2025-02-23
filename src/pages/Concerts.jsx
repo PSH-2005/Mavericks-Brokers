@@ -4,7 +4,6 @@ import "./Pages.css";
 // import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";

@@ -129,9 +129,9 @@ function App() {
   return (
     <div className=''>
       
-      <header><Router>
+      <header>
+    <Router>
       <Navigation account={account} setAccount={setAccount} />
-      <div className="container">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/concerts" element={<Concerts />} />
@@ -141,8 +141,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
         </Routes>
-      </div>
-    </Router>
+      </Router>
       </header>
    
 
