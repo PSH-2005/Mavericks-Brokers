@@ -122,11 +122,6 @@ const Sports = () => {
           <p className="text-lg text-blue-600 mb-8 text-center">
             Book tickets for upcoming sports events
           </p>
-
-          <div className="mb-8 text-blue-600">
-            <Sort />
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 mb-8 mx-auto items-center">
             {occasions.map((occ, index) => (
               <div 
