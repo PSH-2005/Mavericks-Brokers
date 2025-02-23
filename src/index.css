@@ -1,1 +1,41 @@
 @import "tailwindcss";
+.dark-variant{
+  width:270px;
+  height:350px;
+  background-image: url("/scenic_images_v2/agra-fort-uttar-pradesh_243_bilal-ahmad.jpg");
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+}
+.dark-variant .nested-complication{
+  height:350px;
+  width:270px;
+  display:flex;
+  align-items:center;
+  justify-content: center;
+  background-color: rgb(0, 0, 0);
+  opacity:0.6;
+}
+ .dark-variant .inner-border-box{
+  height:93%;
+  width:92%;
+  border:2.5px solid gold;
+  border-radius: 5px;
+  color:white;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+}
+ .dark-variant .inner-border-box h2{
+  text-transform: capitalize;
+  text-align: center;
+}
+ .dark-variant .inner-border-box p{
+  padding:2%;
+  font-size:0.7rem;
+  text-align:center;
+  margin-top:-5%;
+  padding-left:5%;
+  padding-right:5%;
+}

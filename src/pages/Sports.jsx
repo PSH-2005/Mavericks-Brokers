@@ -65,6 +65,7 @@ const Sports = () => {
           SportsABI,
           provider
         );
+        console.log("sportsContract",sportsContract)
         setSportsMaster(sportsContract);
 
         await loadOccasions(sportsContract);
@@ -111,27 +112,10 @@ const Sports = () => {
       );
     }
 
-    if (error) {
-      return (
-        <div>
-          <header>
-            <Navigation account={account} setAccount={setAccount} />
-            <h2 className="header__title"><strong>Event</strong> Tickets</h2>
-          </header>
-          <div className="text-center mt-4 text-red-600">
-            {error}
-          </div>
-        </div>
-      );
-    }
 
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto">
-          <header>
-            <Navigation account={account} setAccount={setAccount} />
-          </header>
-
           <h1 className="text-4xl font-bold text-blue-900 mb-2 text-center">
             Sports Events
           </h1>

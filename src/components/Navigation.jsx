@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navigation.css"; 
-
+import DialogButton from "@/DialogButton";
 const Navigation = ({ account, setAccount }) => {
   const [isConnecting, setIsConnecting] = useState(false);
 
@@ -38,6 +38,7 @@ const Navigation = ({ account, setAccount }) => {
           <li><Link to="/sports">Sports</Link></li>
           <li><Link to="/hotels">Hotels</Link></li>
           <li><Link to="/contact">Contact Us</Link></li>
+          <DialogButton/>
         </ul>
         <input className="nav__search" type="text" placeholder="Find experiences" />
         {account ? (

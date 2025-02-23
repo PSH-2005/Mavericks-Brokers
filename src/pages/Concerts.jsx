@@ -2,7 +2,7 @@ import React from "react";
 import "./Pages.css";
 // import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
+import { useParams } from "react-router-dom";
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import Navigation from "../components/Navigation";
@@ -17,11 +17,13 @@ import Sports from './Sports.jsx';
 import Hotels from "./Hotels";
 import About from "./About";
 import Contact from "./Contact";
-
-const CONTRACT_ADDRESS = "0xA6C0d559a31838b3f3Ef940cF3bBD22C8f70c1fa";
+const CONTRACT_ADDRESS = "0x2f8e6732C805eBC22a82c241254272f933de93aE";
 
 const Concerts = () => {
-    const [provider, setProvider] = useState(null);
+
+  const [provider, setProvider] = useState(null);
+  const { id } = useParams();
+
   const [account, setAccount] = useState(null);
   const [tokenMaster, setTokenMaster] = useState(null);
   const [occasions, setOccasions] = useState([]);
@@ -29,7 +31,6 @@ const Concerts = () => {
   const [toggle, setToggle] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const loadBlockchainData = async () => {
     try {
       if (typeof window.ethereum === 'undefined') {
@@ -61,10 +62,15 @@ const Concerts = () => {
         const occasions = [];
         for (let i = 1; i <= totalOccasions; i++) {
           const occ = await tokenMaster.getOccasion(i);
+          if(parseInt(id)===i-1){
+            console.log("Entered the lloop",occ)
+            setOccasion(occ);
+          }
           occasions.push(occ);
         }
+        console.log("Occ",occasions)
         setOccasions(occasions);
-
+        setToggle(true);
         window.ethereum.on('accountsChanged', async (accounts) => {
           if (accounts && accounts.length > 0) {
             setAccount(accounts[0]);
@@ -126,7 +132,7 @@ const Concerts = () => {
     );
   }
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b text-black from-blue-50 to-white mx-auto px-4 py-8">
       {/* Header Section */}
       <div className="max-w-7xl mx-auto">
         <h1 className="text-4xl font-bold text-blue-900 mb-2 text-center">
