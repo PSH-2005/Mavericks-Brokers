@@ -4,7 +4,6 @@ import "./Pages.css";
 // import './App.css';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
@@ -15,7 +14,6 @@ import SeatChart from "../components/SeatChart";
 import IPAddressDisplay from "../components/ipAdressDisplay";
 import CreateEvents from "../components/CreateEvents";
 import TokenMaster from "../abis/TokenMaster.json";
-import Cardd from "../components/cardd";
 import Sports from "./Sports.jsx";
 import Hotels from "./Hotels";
 import About from "./About";
