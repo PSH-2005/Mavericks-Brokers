@@ -126,38 +126,63 @@ const Concerts = () => {
     );
   }
   return (
-    <div className="page">
-      <h1>Concerts</h1>
-      <p>Discover the latest concerts happening near you.</p>
-      
-      <Sort />
-      <div className="cards">
-        {occasions.map((occ, index) => (
-          <Card
-            occasion={occ}
-            id={index + 1}
-            tokenMaster={tokenMaster}
-            provider={provider}
-            account={account}
-            toggle={toggle}
-            setToggle={setToggle}
-            setOccasion={setOccasion}
-            key={index}
-          />
-        ))}
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mx-auto px-4 py-8">
+      {/* Header Section */}
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold text-blue-900 mb-2 text-center">
+          Concerts
+        </h1>
+        <p className="text-lg text-blue-600 mb-8 text-center">
+          Discover the latest concerts happening near you.
+        </p>
+  
+        {/* Sort Component */}
+        <div className="mb-8 text-blue-600">
+          <Sort />
+        </div>
+  
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 mb-8 mx-auto items-center">
+          {occasions.map((occ, index) => (
+            <div className="transform hover:scale-105 transition-transform duration-300 max-w-[600px] mx-auto" key={index}>
+              <Card
+
+                occasion={occ}
+                id={index + 1}
+                tokenMaster={tokenMaster}
+                provider={provider}
+                account={account}
+                toggle={toggle}
+                setToggle={setToggle}
+                setOccasion={setOccasion}
+                className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 
+                border border-blue-100 overflow-hidden"
+              />
+            </div>
+          ))}
+        </div>
+  
+        {/* Seat Chart Modal */}
+        {toggle && (
+          <div className="fixed inset-0 bg-blue-900/20 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl m-4 p-6">
+              <SeatChart
+                occasion={occasion}
+                tokenMaster={tokenMaster}
+                provider={provider}
+                setToggle={setToggle}
+                className="bg-white rounded-xl"
+              />
+            </div>
+          </div>
+        )}
+  
+        {/* IP Address Display */}
+        <div className="mt-8 text-blue-600 text-center">
+          <IPAddressDisplay className="text-blue-600" />
+        </div>
       </div>
-
-      {toggle && (
-        <SeatChart
-          occasion={occasion}
-          tokenMaster={tokenMaster}
-          provider={provider}
-          setToggle={setToggle}
-        />
-      )}
-      <IPAddressDisplay />
     </div>
-
   );
 };
 

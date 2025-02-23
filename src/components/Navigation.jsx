@@ -37,7 +37,6 @@ const Navigation = ({ account, setAccount }) => {
           <li><Link to="/concerts">Concerts</Link></li>
           <li><Link to="/sports">Sports</Link></li>
           <li><Link to="/hotels">Hotels</Link></li>
-          <li><Link to="/about">About Us</Link></li>
           <li><Link to="/contact">Contact Us</Link></li>
         </ul>
         <input className="nav__search" type="text" placeholder="Find experiences" />
