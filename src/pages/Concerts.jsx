@@ -119,21 +119,22 @@ const Concerts = () => {
 
   if (error) {
     return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
-        <header>
-          <Navigation account={account} setAccount={setAccount} />
-          <h2 className="header__title">
-            <strong>Event</strong> Tickets
-          </h2>
-        </header>
-        <div className="text-center mt-4 text-red-600">{error}</div>
-      </div>
+      // <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-50 to-white">
+      //   <header>
+      //     <Navigation account={account} setAccount={setAccount} />
+      //     <h2 className="header__title">
+      //       <strong>Event</strong> Tickets
+      //     </h2>
+      //   </header>
+      //   <div className="text-center mt-4 text-red-600">{error}</div>
+      // </div>
+      null
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white mx-auto px-4 py-8">
-      {/* Header Section */}
+
       <div className="max-w-7xl mx-auto">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
@@ -151,14 +152,14 @@ const Concerts = () => {
           Discover the latest concerts happening near you.
         </motion.p>
 
-        {/* Sort Component */}
+        Sort Component
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8 text-blue-600"
         >
           <Sort />
-        </motion.div>
+        </motion.div> 
 
         {/* Cards Grid */}
         <div className="flex flex-col gap-6 mb-8 mx-auto items-center">
@@ -212,7 +213,7 @@ const Concerts = () => {
           <IPAddressDisplay className="text-blue-600" />
         </motion.div>
       </div>
-    </div>
+    // </div>
   );
 };
 

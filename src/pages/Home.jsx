@@ -59,16 +59,17 @@ const Home = () => {
         <h1 className="hero-title">Mavericks Bookers</h1>
         <p className="hero-subtitle">Discover & book your next adventure — from live concerts to exclusive hotel stays!</p>
         <Typewriter texts={["Find concerts near you!", "Book your next hotel!", "Plan your sports experience!"]} />
-        <SearchBar />
+        {/* <SearchBar /> */}
       </section>
 
       {/* Categories */}
       <section className="categories">
         <h2 className="section-title">Explore Categories</h2>
         <div className="event-grid">
-          <EventCard icon={Music} title="Concerts & Shows" description="Experience live music and performances from top artists." />
-          <EventCard icon={Trophy} title="Sports Events" description="Get tickets to the biggest sports events of the season." />
-          <EventCard icon={Building} title="Hotel Bookings" description="Find the perfect accommodations at the best prices." />
+
+          <a href="/concerts"><EventCard icon={Music} title="Concerts & Shows" description="Experience live music and performances from top artists." /></a>
+          <a href="/sports"><EventCard icon={Trophy} title="Sports Events" description="Get tickets to the biggest sports events of the season." /></a>
+          <a href="/hotels"><EventCard icon={Building} title="Hotel Bookings" description="Find the perfect accommodations at the best prices." /></a>
         </div>
       </section>
 
