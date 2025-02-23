@@ -119,7 +119,7 @@ const Concerts = () => {
           <IPAddressDisplay />
         </motion.div>
       </div>
-    </div>
+    // </div>
   );
 };
 
