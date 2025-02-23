@@ -110,8 +110,10 @@ function DialogButton() {
     <DrawerRoot size="xl">
       <DrawerBackdrop />
       <DrawerTrigger asChild>
-        <Button variant="outline" size="xl" className='text-red'>
+        <Button variant="outline" size="xl" className='text-white hover:text-blue-500'>
+            <span className='text-white hover:text-blue-500'>
           Open Drawer
+          </span>
         </Button>
       </DrawerTrigger>
       <DrawerContent display="flex" flexDir="row" bg="transparent" outline="none">

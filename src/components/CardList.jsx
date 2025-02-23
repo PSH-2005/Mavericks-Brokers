@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 const CardList = () => {
     const navigate = useNavigate();
     const {hotels}=useHotelContext()
-    const id=3;
     const {events}=useEventContext()
     return (
         <HStack gap="2" overflowX={"scroll"} p="2" h="min-content">
@@ -38,7 +37,7 @@ const CardList = () => {
                         {element.location}
                     </p>
                    
-                    <Button border="1px solid white" w="11/12" onClick={()=>navigate(`/concerts/${id}`)} >Book Now</Button>
+                    <Button border="1px solid white" w="11/12" onClick={()=>navigate(`/concerts/${element.id}`)} >Book Now</Button>
                     
                     </Container>
                   </Container>

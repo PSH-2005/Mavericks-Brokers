@@ -150,7 +150,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
   const rightSeats = Array.from({ length: totalSeats - leftSeatsCount }, (_, i) => leftSeatsCount + i + 1);
 
   return (
-    <div className="occasion">
+    <div className="occasion text-black">
       <div className="occasion__seating" style={{ position: 'relative' }}>
         {/* Close button positioned at the top right */}
         <div
@@ -172,7 +172,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
         <div 
           className="occasion__stage" 
           style={{ 
-            border: '2px solid blue', 
+            // border: '2px solid blue', 
             backgroundColor: 'lightgrey',
             padding: '10px', 
             borderRadius: '5px', 
@@ -200,7 +200,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
             <div 
               className="occasion__walkway occasion__walkway--left"
               style={{ 
-                border: '2px solid blue', 
+                // border: '2px solid blue', 
                 backgroundColor: 'lightgrey',
                 padding: '5px', 
                 borderRadius: '5px', 
@@ -227,7 +227,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
               <div 
                 className="occasion__walkway occasion__walkway--middle"
                 style={{ 
-                  border: '2px solid blue', 
+                  // border: '2px solid blue', 
                   backgroundColor: 'lightgrey',
                   padding: '5px', 
                   borderRadius: '5px', 
@@ -254,7 +254,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
             <div 
               className="occasion__walkway occasion__walkway--right"
               style={{ 
-                border: '2px solid blue', 
+                // border: '2px solid blue', 
                 backgroundColor: 'lightgrey',
                 padding: '5px', 
                 borderRadius: '5px', 

@@ -31,8 +31,8 @@ const Navigation = ({ account, setAccount }) => {
       <div className="nav__brand">
         <h1>Mavericks Bookers</h1>
       </div>
-      <div className="nav__links-container">
-        <ul className="nav__links">
+      <div className="nav__links-container flex flex-row justify-between items-center gap-x-6">
+        <ul className="nav__links flex flex-row justify-between items-center gap-x-6">
           <li><Link to="/">Home</Link></li>
           <li><Link to="/concerts">Concerts</Link></li>
           <li><Link to="/sports">Sports</Link></li>
@@ -40,7 +40,6 @@ const Navigation = ({ account, setAccount }) => {
           <li><Link to="/contact">Contact Us</Link></li>
           <DialogButton/>
         </ul>
-        <input className="nav__search" type="text" placeholder="Find experiences" />
         {account ? (
           <button className="nav__connect">{account.slice(0, 6) + "..." + account.slice(-4)}</button>
         ) : (

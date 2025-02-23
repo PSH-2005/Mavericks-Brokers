@@ -45,7 +45,10 @@ const Concerts = () => {
         const occasionsData = [];
         for (let i = 1; i <= totalOccasions; i++) {
           const occ = await tokenMaster.getOccasion(i);
-          if (parseInt(id) === i - 1) setOccasion(occ);
+          if (parseInt(id) === i - 1){ 
+            setOccasion(occ);
+            setToggle(occ);
+          }
           occasionsData.push(occ);
         }
         setOccasions(occasionsData);
