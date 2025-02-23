@@ -14,7 +14,6 @@ import SeatChart from "../components/SeatChart";
 import IPAddressDisplay from "../components/ipAdressDisplay";
 import CreateEvents from "../components/CreateEvents";
 import TokenMaster from "../abis/TokenMaster.json";
-import Cardd from "../components/cardd";
 import Sports from "./Sports.jsx";
 import Hotels from "./Hotels";
 import About from "./About";
