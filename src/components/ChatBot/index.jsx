@@ -175,6 +175,7 @@ const ChatBot = () => {
             <Container color="grey" borderTop="0.5px solid black" borderColor="navy" p="2" display="flex" justifyContent="center">
                 <h2 className="text-xl font-bold mb-4">Record & Transcribe Audio</h2>
             </Container>
+            {isRecording?<img height="80px" width="80px" src="https://cdn.dribbble.com/userupload/23283792/file/original-8d161371a1eae2c24c166335d95ee36d.gif"/>:null}
       </VStack>
     </Container>
   );

@@ -56,7 +56,7 @@ const Home = () => {
     <div className="home-container">
       {/* Hero Section */}
       <section className="hero">
-        <h1 className="hero-title">Mavericks Bookers</h1>
+        <h1 className="hero-title">Mavericks Brokers</h1>
         <p className="hero-subtitle">Discover & book your next adventure — from live concerts to exclusive hotel stays!</p>
         <Typewriter texts={["Find concerts near you!", "Book your next hotel!", "Plan your sports experience!"]} />
         {/* <SearchBar /> */}

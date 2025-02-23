@@ -106,7 +106,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
       getSeatsTaken();
     } catch (error) {
       console.error("Error purchasing ticket:", error);
-      setError("Failed to purchase ticket. Please try again.");
+      setError("");
       setSelectedSeat(null);
     }
   };
@@ -150,11 +150,11 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
   const rightSeats = Array.from({ length: totalSeats - leftSeatsCount }, (_, i) => leftSeatsCount + i + 1);
 
   return (
-    <div className="occasion text-black">
-      <div className="occasion__seating" style={{ position: 'relative' }}>
+    <div className="occasion text-black ">
+      <div className="occasion__seating " style={{ position: 'relative' }}>
         {/* Close button positioned at the top right */}
         <div
-          className="close-btn-container"
+          className="close-btn-container text-bold"
           style={{ position: 'absolute', top: '10px', right: '10px', cursor: 'pointer' }}
           onClick={() => setToggle(false)}
         >
@@ -162,10 +162,10 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
           <div className="close-tooltip">Close Tab</div>
         </div>
 
-        <h1 className="occasion__title">{occasion.name} Seating Map</h1>
+        <h1 className="occasion__title text-center text-bold">{occasion.name} Seating Map</h1>
         <div className="occasion__info">
-          <p>Device: {localIP ? 'Verified' : 'Not detected'}</p>
-          <p>Tickets: {ticketCount}/5</p>
+          <p className='text-center text-bold'>Device: {localIP ? 'Verified' : 'Not detected'}</p>
+          <p className='text-center text-bold'>Tickets: {ticketCount}/5</p>
           {error && <p className="occasion__error">{error}</p>}
         </div>
         {/* Stage with blue border and light grey background */}
@@ -195,8 +195,9 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
             padding: '10px' 
           }}
         >
-          <div className="occasion__hallway">
+          <div className="occasion__hallway flex gap-y-10">
             {/* Left Walkway with blue border and light grey background */}
+            <br/>
             <div 
               className="occasion__walkway occasion__walkway--left"
               style={{ 
@@ -210,8 +211,8 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
             >
               <span>WALKWAY</span>
             </div>
-            <div className="occasion__seatsWrapper">
-              <div className="occasion__seatsContainer">
+            <div className="occasion__seatsWrapper items-center justify-center mx-auto pl-[100px] text-center gap-y-10">
+              <div className="occasion__seatsContainer flex flex-wrap gap-2 max-w-[400px] justify-center items-center">
                 {leftSeats.map(seatNum => (
                   <Seat
                     key={seatNum}
@@ -224,7 +225,7 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
                 ))}
               </div>
               {/* Middle Walkway */}
-              <div 
+              {/* <div 
                 className="occasion__walkway occasion__walkway--middle"
                 style={{ 
                   // border: '2px solid blue', 
@@ -236,8 +237,10 @@ const SeatChart = ({ occasion, tokenMaster, provider, setToggle }) => {
                 }}
               >
                 <span>WALKWAY</span>
-              </div>
-              <div className="occasion__seatsContainer">
+              </div> */}
+              <br/>
+              <br/>
+              <div className="occasion__seatsContainer occasion__seatsContainer flex flex-wrap gap-2 max-w-[400px] justify-center items-center">
                 {rightSeats.map(seatNum => (
                   <Seat
                     key={seatNum}

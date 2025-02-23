@@ -28,8 +28,9 @@ const Navigation = ({ account, setAccount }) => {
 
   return (
     <nav className="nav">
-      <div className="nav__brand">
-        <h1>Mavericks Bookers</h1>
+      <div className="nav__brand flex items-center gap-x-5">
+        <h1 className="text-3xl italics">Mavericks Brokers</h1>
+        <DialogButton/>
       </div>
       <div className="nav__links-container flex flex-row justify-between items-center gap-x-6">
         <ul className="nav__links flex flex-row justify-between items-center gap-x-6">
@@ -38,7 +39,6 @@ const Navigation = ({ account, setAccount }) => {
           <li><Link to="/sports">Sports</Link></li>
           <li><Link to="/hotels">Hotels</Link></li>
           <li><Link to="/contact">Contact Us</Link></li>
-          <DialogButton/>
         </ul>
         {account ? (
           <button className="nav__connect">{account.slice(0, 6) + "..." + account.slice(-4)}</button>
